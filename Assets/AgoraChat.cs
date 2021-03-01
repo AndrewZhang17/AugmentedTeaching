@@ -6,11 +6,14 @@ using agora_gaming_rtc;
 #if (UNITY_2018_3_OR_NEWER && UNITY_ANDROID)
 using UnityEngine.Android;
 #endif
+using UnityEngine.XR.ARFoundation;
+using System.Runtime.InteropServices;
 
 public class AgoraChat : MonoBehaviour
 {
     public string AppID;
     public string ChannelName;
+    public ARCameraBackground CameraImage;
     #if (UNITY_2018_3_OR_NEWER && UNITY_ANDROID)
         private ArrayList permissionList = new ArrayList();
     #endif
@@ -18,6 +21,9 @@ public class AgoraChat : MonoBehaviour
     VideoSurface myView;
     VideoSurface remoteView;
     IRtcEngine mRtcEngine;
+    Texture2D mTexture;
+    Rect mRect;
+    int i = 0;
 
     void Awake()
     {
@@ -37,14 +43,19 @@ public class AgoraChat : MonoBehaviour
     void Update()
     {
         CheckPermissions();
+        StartCoroutine(shareScreen());
     }
 
     void Join()
     {
         mRtcEngine.EnableVideo();
         mRtcEngine.EnableVideoObserver();
-        myView.SetEnable(true);
+        mRtcEngine.SetExternalVideoSource(true, false);
+        // myView.SetEnable(true);
         mRtcEngine.JoinChannel(ChannelName, "", 0);
+        mRect = new Rect(0, 0, Screen.width, Screen.height);
+        // Creates a texture of the rectangle you create.
+        mTexture = new Texture2D((int)mRect.width, (int)mRect.height, TextureFormat.BGRA32, false);
     }
 
     void Leave()
@@ -62,33 +73,33 @@ public class AgoraChat : MonoBehaviour
 
     void OnLeaveChannelHandler(RtcStats stats)
     {
-        myView.SetEnable(false);
-        if (remoteView != null)
-        {
-            remoteView.SetEnable(false);
-        }
+        // myView.SetEnable(false);
+        // if (remoteView != null)
+        // {
+        //     remoteView.SetEnable(false);
+        // }
     }
 
     void OnUserJoined(uint uid, int elapsed)
     {
-        GameObject go = GameObject.Find("RemoteView");
+        // GameObject go = GameObject.Find("RemoteView");
 
-        if (remoteView == null)
-        {
-            remoteView = go.AddComponent<VideoSurface>();
-            remoteView.GetComponent<VideoSurface>().EnableFlipTextureApply(true, true);
-        }
+        // if (remoteView == null)
+        // {
+        //     remoteView = go.AddComponent<VideoSurface>();
+        //     remoteView.GetComponent<VideoSurface>().EnableFlipTextureApply(true, true);
+        // }
 
-        remoteView.SetForUser(uid);
-        remoteView.SetEnable(true);
-        remoteView.SetVideoSurfaceType(AgoraVideoSurfaceType.RawImage);
-        remoteView.SetGameFps(30);
-        Debug.Log("User joined");
+        // remoteView.SetForUser(uid);
+        // remoteView.SetEnable(true);
+        // remoteView.SetVideoSurfaceType(AgoraVideoSurfaceType.RawImage);
+        // remoteView.SetGameFps(30);
+        // Debug.Log("User joined");
     }
 
     void OnUserOffline(uint uid, USER_OFFLINE_REASON reason)
     {
-        remoteView.SetEnable(false);
+        // remoteView.SetEnable(false);
     }
 
     void OnErrorHandler(int err, string str) {
@@ -107,8 +118,8 @@ public class AgoraChat : MonoBehaviour
     void SetupUI()
     {
         GameObject go = GameObject.Find("MyView");
-        myView = go.AddComponent<VideoSurface>();
-        myView.GetComponent<VideoSurface>().EnableFlipTextureApply(true, true);
+        // myView = go.AddComponent<VideoSurface>();
+        // myView.GetComponent<VideoSurface>().EnableFlipTextureApply(true, true);
         go = GameObject.Find("LeaveButton");
         go?.GetComponent<Button>()?.onClick.AddListener(Leave);
         go = GameObject.Find("JoinButton");
@@ -138,5 +149,45 @@ public class AgoraChat : MonoBehaviour
             }
         #endif
     }
-    
+
+    IEnumerator shareScreen()
+   {
+       yield return new WaitForEndOfFrame();
+       // Reads the Pixels of the rectangle you create.
+       mTexture.ReadPixels(mRect, 0, 0);
+       // Applies the Pixels read from the rectangle to the texture.
+       mTexture.Apply();
+       // Gets the Raw Texture data from the texture and apply it to an array of bytes.
+       byte[] bytes = mTexture.GetRawTextureData();
+       // Gives enough space for the bytes array.
+       int size = Marshal.SizeOf(bytes[0]) * bytes.Length;
+       // Checks whether the IRtcEngine instance is existed.
+       IRtcEngine rtc = IRtcEngine.QueryEngine();
+       if (rtc != null)
+       {
+           // Creates a new external video frame.
+           ExternalVideoFrame externalVideoFrame = new ExternalVideoFrame();
+           // Sets the buffer type of the video frame.
+           externalVideoFrame.type = ExternalVideoFrame.VIDEO_BUFFER_TYPE.VIDEO_BUFFER_RAW_DATA;
+           // Sets the format of the video pixel.
+           externalVideoFrame.format = ExternalVideoFrame.VIDEO_PIXEL_FORMAT.VIDEO_PIXEL_BGRA;
+           // Applies raw data.
+           externalVideoFrame.buffer = bytes;
+           // Sets the width (pixel) of the video frame.
+           externalVideoFrame.stride = (int)mRect.width;
+           // Sets the height (pixel) of the video frame.
+           externalVideoFrame.height = (int)mRect.height;
+           // Removes pixels from the sides of the frame
+           externalVideoFrame.cropLeft = 10;
+           externalVideoFrame.cropTop = 10;
+           externalVideoFrame.cropRight = 10;
+           externalVideoFrame.cropBottom = 10;
+           // Rotates the video frame (0, 90, 180, or 270)
+           externalVideoFrame.rotation = 180;
+           // Increments i with the video timestamp.
+           externalVideoFrame.timestamp = i++;
+           // Pushes the external video frame with the frame you create.
+           int a = rtc.PushVideoFrame(externalVideoFrame);
+       }
+   }    
 }
