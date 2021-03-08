@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources tools:keep="@string/firebase_database_url,@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id,@string/default_web_client_id" xmlns:tools="http://schemas.android.com/tools">
+  <string name="firebase_database_url" translatable="false">https://augmentedteaching-ea1ff-default-rtdb.firebaseio.com</string>
+  <string name="gcm_defaultSenderId" translatable="false">984963266408</string>
+  <string name="google_storage_bucket" translatable="false">augmentedteaching-ea1ff.appspot.com</string>
+  <string name="project_id" translatable="false">augmentedteaching-ea1ff</string>
+  <string name="google_api_key" translatable="false">AIzaSyDJRiKl1K5HUqEE62sPBnauctbQwrD6FCM</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDJRiKl1K5HUqEE62sPBnauctbQwrD6FCM</string>
+  <string name="google_app_id" translatable="false">1:984963266408:android:027c789fb6efa2651188dd</string>
+  <string name="default_web_client_id" translatable="false">984963266408-3g4nsf95e2vda79brm1bao0nukmhg265.apps.googleusercontent.com</string>
+</resources>

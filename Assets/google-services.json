@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "984963266408",
+    "firebase_url": "https://augmentedteaching-ea1ff-default-rtdb.firebaseio.com",
+    "project_id": "augmentedteaching-ea1ff",
+    "storage_bucket": "augmentedteaching-ea1ff.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:984963266408:android:027c789fb6efa2651188dd",
+        "android_client_info": {
+          "package_name": "edu.azhang.AugmentedTeaching"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "984963266408-3g4nsf95e2vda79brm1bao0nukmhg265.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJRiKl1K5HUqEE62sPBnauctbQwrD6FCM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "984963266408-3g4nsf95e2vda79brm1bao0nukmhg265.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
