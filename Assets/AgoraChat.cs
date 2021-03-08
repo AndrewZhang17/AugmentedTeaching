@@ -178,10 +178,10 @@ public class AgoraChat : MonoBehaviour
            // Sets the height (pixel) of the video frame.
            externalVideoFrame.height = (int)mRect.height;
            // Removes pixels from the sides of the frame
-           externalVideoFrame.cropLeft = 10;
-           externalVideoFrame.cropTop = 10;
-           externalVideoFrame.cropRight = 10;
-           externalVideoFrame.cropBottom = 10;
+        //    externalVideoFrame.cropLeft = 10;
+        //    externalVideoFrame.cropTop = 10;
+        //    externalVideoFrame.cropRight = 10;
+        //    externalVideoFrame.cropBottom = 10;
            // Rotates the video frame (0, 90, 180, or 270)
            externalVideoFrame.rotation = 180;
            // Increments i with the video timestamp.
